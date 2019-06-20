@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">android_fp_example</string>
+
+    <string name="all_title_error">Something happened!</string>
+
+    <string name="activity_todos_list_title">TODOs list</string>
+    <string name="activity_todo_details_title_creation">TODO details creation</string>
+    <string name="activity_todo_details_title_edit">TODO details edit</string>
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/padding_default"
+              android:gravity="start|center_vertical">
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/todoAppCompatCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            tools:checked="true"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/todoAppCompatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="Todo title"/>
+</LinearLayout>
