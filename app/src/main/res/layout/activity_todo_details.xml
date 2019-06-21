@@ -2,6 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:padding="@dimen/padding_20dp"
+              android:gravity="top|center_horizontal">
 
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/todoDetailsTitleAppCompatEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vertical_20dp"
+            android:hint="@string/activity_todo_details_hint_title"
+            android:lines="1"
+            android:ellipsize="end"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/todoDetailsContentAppCompatEditText"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start|top"
+            android:layout_marginBottom="@dimen/margin_vertical_20dp"
+            android:hint="@string/activity_todo_details_hint_content"
+            android:lines="1000"
+            android:ellipsize="end"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/createOrUpdateTodoDetailsAppCompatButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vertical_20dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/deleteTodoDetailsAppCompatButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 </LinearLayout>

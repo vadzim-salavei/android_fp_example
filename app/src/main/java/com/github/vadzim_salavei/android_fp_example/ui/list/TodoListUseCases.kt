@@ -1,13 +1,12 @@
 package com.github.vadzim_salavei.android_fp_example.ui.list
 
-import arrow.core.Either
 import arrow.data.Reader
 import arrow.data.ReaderApi
 import arrow.data.flatMap
 import arrow.data.map
 import com.github.vadzim_salavei.android_fp_example.domain.getTodosUseCase
 import com.github.vadzim_salavei.android_fp_example.domain.model.Todo
-import com.github.vadzim_salavei.android_fp_example.domain.updateTodoChecked
+import com.github.vadzim_salavei.android_fp_example.domain.updateTodoCheckedUseCase
 import com.github.vadzim_salavei.android_fp_example.ui.list.model.TodoListItem
 
 fun getTodoListItemsUseCase(): Reader<TodoListDependencies, Unit> =
@@ -22,7 +21,11 @@ fun getTodoListItemsUseCase(): Reader<TodoListDependencies, Unit> =
                 .continueOn(mainCoroutineContext)
                 .unsafeRunAsync { todosEither ->
                     todoListView.hideProgress()
-                    todoListView.showTodosEither(todosEither)
+
+                    todosEither
+                        .map(::mapTodosToTodoListItems)
+                        .mapLeft(::mapThrowableToString)
+                        .fold(todoListView::showErrorMessage, todoListView::showTodoListItems)
                 }
         }
     }
@@ -42,27 +45,22 @@ fun updateTodoListItemUseCase(todoListItemId: Long, checked: Boolean): Reader<To
         val mainCoroutineContext = todoListDependencies.mainCoroutineContext
         val todoListView = todoListDependencies.todoListView
 
-        todoListView.showProgress()
+        updateTodoCheckedUseCase<TodoListDependencies>(todoListItemId, checked).map { todosIo ->
+            todoListView.showProgress()
 
-        updateTodoChecked<TodoListDependencies>(todoListItemId, checked)
-            .flatMap {
-                getTodosUseCase<TodoListDependencies>()
-            }
-            .map { todosIo ->
-                todosIo
-                    .continueOn(mainCoroutineContext)
-                    .unsafeRunAsync { todosEither ->
-                        todoListView.hideProgress()
-                        todoListView.showTodosEither(todosEither)
-                    }
-            }
+            todosIo
+                .continueOn(mainCoroutineContext)
+                .unsafeRunAsync { unitEither ->
+                    todoListView.hideProgress()
+
+                    unitEither
+                        .mapLeft(::mapThrowableToString)
+                        .fold(todoListView::showErrorMessage) {
+                            Unit
+                        }
+                }
+        }
     }
-
-private fun TodoListView.showTodosEither(todosEither: Either<Throwable, List<Todo>>): Unit =
-    todosEither
-        .map(::mapTodosToTodoListItems)
-        .mapLeft(::mapThrowableToString)
-        .fold(::showErrorMessage, ::showTodoListItems)
 
 private fun mapTodosToTodoListItems(todos: List<Todo>): List<TodoListItem> =
     todos.map { todo ->

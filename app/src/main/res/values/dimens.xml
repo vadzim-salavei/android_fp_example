@@ -7,5 +7,6 @@
     <dimen name="margin_horizontal_default">@dimen/margin_horizontal_20dp</dimen>
 
     <dimen name="padding_10dp">10dp</dimen>
+    <dimen name="padding_20dp">20dp</dimen>
     <dimen name="padding_default">@dimen/padding_10dp</dimen>
 </resources>

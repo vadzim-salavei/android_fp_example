@@ -24,7 +24,7 @@ class PreferenceApiImpl private constructor(
 
     private fun simulateIoDelaysAndErrors() {
         val currentTimeMillis = System.currentTimeMillis()
-        val delayMillis = currentTimeMillis % 3000 + 1000 // 1..3 seconds
+        val delayMillis = currentTimeMillis % 1000 + 1000 // 0..2 seconds
 
         Thread.sleep(delayMillis)
 
