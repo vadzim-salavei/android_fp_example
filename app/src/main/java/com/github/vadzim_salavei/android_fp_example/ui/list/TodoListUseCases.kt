@@ -1,14 +1,13 @@
 package com.github.vadzim_salavei.android_fp_example.ui.list
 
-import arrow.core.ForId
-import arrow.core.Id
-import arrow.core.extensions.id.monad.monad
-import arrow.data.*
-import arrow.data.extensions.kleisli.monad.flatMap
-import com.github.vadzim_salavei.android_fp_example.domain.getTodoUseCase
+import arrow.core.Either
+import arrow.data.Reader
+import arrow.data.ReaderApi
+import arrow.data.flatMap
+import arrow.data.map
 import com.github.vadzim_salavei.android_fp_example.domain.getTodosUseCase
 import com.github.vadzim_salavei.android_fp_example.domain.model.Todo
-import com.github.vadzim_salavei.android_fp_example.domain.updateTodoUseCase
+import com.github.vadzim_salavei.android_fp_example.domain.updateTodoChecked
 import com.github.vadzim_salavei.android_fp_example.ui.list.model.TodoListItem
 
 fun getTodoListItemsUseCase(): Reader<TodoListDependencies, Unit> =
@@ -16,21 +15,14 @@ fun getTodoListItemsUseCase(): Reader<TodoListDependencies, Unit> =
         val mainCoroutineContext = todoListDependencies.mainCoroutineContext
         val todoListView = todoListDependencies.todoListView
 
-        getTodosUseCase<TodoListDependencies>().map { todosIo ->
-            todoListView.showProgress()
+        todoListView.showProgress()
 
+        getTodosUseCase<TodoListDependencies>().map { todosIo ->
             todosIo
                 .continueOn(mainCoroutineContext)
                 .unsafeRunAsync { todosEither ->
                     todoListView.hideProgress()
-
-                    todosEither
-                        .map(::mapTodosToTodoListItems)
-                        .mapLeft(::mapThrowableToString)
-                        .fold(
-                            todoListView::showErrorMessage,
-                            todoListView::showTodoListItems
-                        )
+                    todoListView.showTodosEither(todosEither)
                 }
         }
     }
@@ -45,19 +37,32 @@ fun editTodoListItemUseCase(todoListItemId: Long): Reader<TodoListDependencies, 
         todoListDependencies.navigator.editTodoDetails(todoListItemId)
     }
 
-fun updateTodoListItemUseCase(todoListItemId: Long, isChecked: Boolean): Reader<TodoListDependencies, Unit> =
+fun updateTodoListItemUseCase(todoListItemId: Long, checked: Boolean): Reader<TodoListDependencies, Unit> =
     ReaderApi.ask<TodoListDependencies>().flatMap { todoListDependencies ->
         val mainCoroutineContext = todoListDependencies.mainCoroutineContext
         val todoListView = todoListDependencies.todoListView
 
-        getTodoUseCase<TodoListDependencies>(todoListItemId).flatMap { todoIo ->
-            val todo: Todo = TODO()
+        todoListView.showProgress()
 
-            updateTodoUseCase<TodoListDependencies>(todo.copy(
-                checked = isChecked
-            ))
-        }.map { Unit }
+        updateTodoChecked<TodoListDependencies>(todoListItemId, checked)
+            .flatMap {
+                getTodosUseCase<TodoListDependencies>()
+            }
+            .map { todosIo ->
+                todosIo
+                    .continueOn(mainCoroutineContext)
+                    .unsafeRunAsync { todosEither ->
+                        todoListView.hideProgress()
+                        todoListView.showTodosEither(todosEither)
+                    }
+            }
     }
+
+private fun TodoListView.showTodosEither(todosEither: Either<Throwable, List<Todo>>): Unit =
+    todosEither
+        .map(::mapTodosToTodoListItems)
+        .mapLeft(::mapThrowableToString)
+        .fold(::showErrorMessage, ::showTodoListItems)
 
 private fun mapTodosToTodoListItems(todos: List<Todo>): List<TodoListItem> =
     todos.map { todo ->

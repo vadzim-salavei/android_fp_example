@@ -11,13 +11,18 @@ import com.google.gson.reflect.TypeToken
 private const val KEY_TODOS = "KEY_TODOS"
 private const val DEFAULT_VALUE_TODOS = "[]"
 
-fun <D : DomainDependencies> getTodoUseCase(todoId: Long): Reader<D, IO<Todo>> =
-    getTodosUseCase<D>().map { todosIo ->
-        todosIo.map { todos ->
-            todos.first { todo ->
-                todo.id == todoId
+fun <D : DomainDependencies> updateTodoChecked(todoId: Long, checked: Boolean): Reader<D, IO<Unit>> =
+    getTodosUseCase<D>().flatMap { todosIo ->
+        setTodosUseCase<D>(todosIo.map { todos ->
+            todos.toMutableList().apply {
+                replaceAll { todo ->
+                    when (todoId) {
+                        todo.id -> todo.copy(checked = checked)
+                        else -> todo
+                    }
+                }
             }
-        }
+        })
     }
 
 fun <D : DomainDependencies> getTodosUseCase(): Reader<D, IO<List<Todo>>> =
@@ -35,22 +40,17 @@ fun <D : DomainDependencies> getTodosUseCase(): Reader<D, IO<List<Todo>>> =
         }
     }
 
-fun <D : DomainDependencies> setTodosUseCase(todos: List<Todo>): Reader<D, IO<Unit>> =
+fun <D : DomainDependencies> setTodosUseCase(todosIo: IO<List<Todo>>): Reader<D, IO<Unit>> =
     ReaderApi.ask<D>().map { domainDependencies ->
         val gson = domainDependencies.gson
         val preferenceApi = domainDependencies.preferenceApi
         val ioCoroutineContext = domainDependencies.ioCoroutineContext
 
-        IO(ioCoroutineContext) {
-            gson.toJson(todos).let { todosJson ->
-                preferenceApi.setString(KEY_TODOS, todosJson)
+        todosIo.flatMap { todos ->
+            IO(ioCoroutineContext) {
+                gson.toJson(todos).let { todosJson ->
+                    preferenceApi.setString(KEY_TODOS, todosJson)
+                }
             }
-        }
-    }
-
-fun <D : DomainDependencies> updateTodoUseCase(todo: Todo): Reader<D, IO<Unit>> =
-    getTodosUseCase<D>().zip flatMap { todosIo ->
-        todosIo.map { todos ->
-            setTodosUseCase<D>()
         }
     }
