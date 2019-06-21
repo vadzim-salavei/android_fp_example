@@ -3,9 +3,9 @@ package com.github.vadzim_salavei.android_fp_example.ui.navigation
 import android.app.Activity
 import com.github.vadzim_salavei.android_fp_example.ui.details.TodoDetailsActivity
 
-class NavigationDelegateImpl(
+class NavigatorImpl(
     private val activity: Activity
-) : NavigationDelegate {
+) : Navigator {
 
     override fun close() {
         activity.finish()

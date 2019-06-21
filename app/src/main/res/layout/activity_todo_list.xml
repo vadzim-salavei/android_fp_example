@@ -5,19 +5,19 @@
         android:layout_width="match_parent" android:layout_height="match_parent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshTodosListLayout"
+            android:id="@+id/swipeRefreshTodoListLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/todosListRecyclerView"
+                android:id="@+id/todoListRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addTodosListItemFloatingActionButton"
+            android:id="@+id/createTodoListItemFloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_input_add"

@@ -1,7 +1,0 @@
-package com.github.vadzim_salavei.android_fp_example.domain
-
-import com.google.gson.TypeAdapterFactory
-import gsonpath.AutoGsonAdapterFactory
-
-@AutoGsonAdapterFactory
-interface TodosAutoGsonAdapterFactory : TypeAdapterFactory

@@ -14,7 +14,7 @@
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning"
             android:fullBackupContent="false">
 
-        <activity android:name=".ui.list.TodosListActivity"
+        <activity android:name=".ui.list.TodoListActivity"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
