@@ -2,6 +2,7 @@
     <string name="app_name">android_fp_example</string>
 
     <string name="all_title_error">Something happened!</string>
+    <string name="all_progress_dialog_message_loading">Loading…</string>
 
     <string name="activity_todo_list_title">TODO list</string>
 
@@ -12,5 +13,4 @@
     <string name="activity_todo_details_button_create">Create TODO details</string>
     <string name="activity_todo_details_button_edit">Edit TODO details</string>
     <string name="activity_todo_details_button_delete">Delete TODO details</string>
-    <string name="activity_todo_details_loading">Loading…</string>
 </resources>

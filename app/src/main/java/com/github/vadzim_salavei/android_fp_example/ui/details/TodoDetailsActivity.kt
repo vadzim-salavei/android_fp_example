@@ -37,7 +37,7 @@ class TodoDetailsActivity : AppCompatActivity(), TodoDetailsView {
 
     override fun showProgress() {
         progressDialog?.dismiss()
-        progressDialog = ProgressDialog.show(this, getString(R.string.activity_todo_details_loading), "")
+        progressDialog = ProgressDialog.show(this, "", getString(R.string.all_progress_dialog_message_loading))
     }
 
     override fun hideProgress() {

@@ -1,5 +1,6 @@
 package com.github.vadzim_salavei.android_fp_example.ui.list
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_todo_list.*
 class TodoListActivity : AppCompatActivity(), TodoListView {
 
     private lateinit var todoListDependencies: TodoListDependencies
+
+    private var progressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +52,21 @@ class TodoListActivity : AppCompatActivity(), TodoListView {
     }
 
     override fun showProgress() {
-        if (swipeRefreshTodoListLayout.isRefreshing.not()) {
-            swipeRefreshTodoListLayout.isRefreshing = true
+        if (swipeRefreshTodoListLayout.isRefreshing) {
+            // does nothing
+        } else {
+            progressDialog?.dismiss()
+            progressDialog = ProgressDialog.show(this, "", getString(R.string.all_progress_dialog_message_loading))
         }
     }
 
     override fun hideProgress() {
-        swipeRefreshTodoListLayout.isRefreshing = false
+        if (swipeRefreshTodoListLayout.isRefreshing) {
+            swipeRefreshTodoListLayout.isRefreshing = false
+        } else {
+            progressDialog?.dismiss()
+            progressDialog = null
+        }
     }
 
     override fun showTodoListItems(todoListItems: List<TodoListItem>) {

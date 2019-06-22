@@ -55,7 +55,7 @@ fun <D : DomainDependencies> deleteTodoByIdUseCase(todoId: Long?): Reader<D, IO<
 
 fun <D : DomainDependencies> updateTodosUseCase(block: (List<Todo>) -> List<Todo>): Reader<D, IO<Unit>> =
     getTodosUseCase<D>().flatMap { todosIo ->
-        setTodosUseCase<D>(todosIo.map(block))
+        setTodosUseCase(todosIo.map(block))
     }
 
 fun <D : DomainDependencies> getTodosUseCase(): Reader<D, IO<List<Todo>>> =
@@ -68,7 +68,7 @@ fun <D : DomainDependencies> getTodosUseCase(): Reader<D, IO<List<Todo>>> =
             preferenceApi
                 .getString(KEY_TODOS, DEFAULT_VALUE_TODOS)
                 .let { todosJson ->
-                    gson.fromJson<List<Todo>>(todosJson, object : TypeToken<List<Todo>>() {}.type)
+                    gson.fromJson(todosJson, object : TypeToken<List<Todo>>() {}.type)
                 }
         }
     }
